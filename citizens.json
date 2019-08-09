@@ -1,0 +1,26 @@
+{
+  "citizens": [
+    {
+      "appartement": 7,
+      "birth_date": "Fri, 26 Aug 1994 00:00:00 GMT",
+      "building": "16",
+      "citizen_id": 1,
+      "gender": "male",
+      "name": "John Snow",
+      "relatives": [],
+      "street": "Lev Tolstoy",
+      "town": "Moscow"
+    },
+    {
+      "appartement": 7,
+      "birth_date": "Fri, 26 Aug 1994 00:00:00 GMT",
+      "building": "16",
+      "citizen_id": 1,
+      "gender": "male",
+      "name": "Stouner",
+      "relatives": [],
+      "street": "Lev Tolstoy",
+      "town": "Moscow"
+    }
+  ]
+}

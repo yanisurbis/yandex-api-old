@@ -1,50 +1,44 @@
-from flask import Flask, request
-from flask_marshmallow import Marshmallow
-from flask_sqlalchemy import SQLAlchemy
+import uuid
+
+from flask import Flask, jsonify, request
+
+from db import insert_citizens, select_citizens_by_import_id
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://yanis:04051996@localhost/template3'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app)
-ma = Marshmallow(app)
+@app.route('/imports', methods=['POST'])
+def import_citizens():
+    citizens = request.get_json()['citizens']
+    import_id = uuid.uuid4().int % 999999999
+    insert_citizens(import_id, citizens)
 
+    res = {'data': {
+        "import_id": import_id
+    }}
 
-class Box(db.Model):
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
-    name = db.Column(db.String(100), nullable=False)
-    birthday = db.Column(db.Date, nullable=False)
-    city = db.Column(db.String(100), nullable=False)
-
-    def __init__(self, name, birthday, city):
-        self.city = city
-        self.birthday = birthday
-        self.name = name
+    return jsonify(res), 201
 
 
-class BoxSchema(ma.Schema):
-    class Meta:
-        fields = ('id', 'name', 'birthday', 'city')
-        model = Box
+@app.route('/imports/<string:import_id>/citizens', methods=['GET'])
+def get_citizens(import_id):
+    citizens = select_citizens_by_import_id(import_id)
+
+    res = {'data': citizens}
+
+    return jsonify(res), 200
 
 
-box_schema = BoxSchema(strict=True)
-boxes_schema = BoxSchema(many=True, strict=True)
-
-
-@app.route('/box', methods=['POST'])
-def add_box():
-    name = request.json['name']
-    birthday = request.json['birthday']
-    city = request.json['city']
-
-    new_box = Box(name, birthday, city)
-
-    db.session.add(new_box)
-    db.session.commit()
-
-    return box_schema.jsonify(new_box)
+# # TODO: should UUID:import_id?
+# @app.route('/imports/<string:import_id>/citizens/<string:citizen_id>', methods=['PATCH'])
+# def update_citizen(import_id, citizen_id):
+#     partial_citizen = request.get_json()
+#
+#     citizen = db.update_citizen(import_id, citizen_id, partial_citizen)
+#
+#     res = {'data': citizen}
+#
+#     return jsonify(res), 200
 
 
 if __name__ == '__main__':
