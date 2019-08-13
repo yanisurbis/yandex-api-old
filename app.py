@@ -1,4 +1,4 @@
-import uuid
+import random
 
 from flask import Flask, jsonify, request
 
@@ -10,7 +10,8 @@ app = Flask(__name__)
 @app.route('/imports', methods=['POST'])
 def import_citizens():
     citizens = request.get_json()['citizens']
-    import_id = str(uuid.uuid1())
+    # import_id = str(uuid.uuid1())
+    import_id = random.randint(1, 2147483647)
     insert_citizens(import_id, citizens)
 
     res = {'data': {
@@ -20,9 +21,9 @@ def import_citizens():
     return jsonify(res), 201
 
 
-@app.route('/imports/<uuid:import_id>/citizens', methods=['GET'])
+@app.route('/imports/<int:import_id>/citizens', methods=['GET'])
 def get_citizens(import_id):
-    citizens = select_citizens_by_import_id(import_id)
+    citizens = select_citizens_by_import_id(str(import_id))
 
     res = {'data': citizens}
 

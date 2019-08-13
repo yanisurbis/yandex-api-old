@@ -18,12 +18,15 @@ def select_citizens_by_import_id(import_id):
 def insert_citizens(import_id, citizens):
     with conn.cursor(cursor_factory=RealDictCursor) as curs:
         for c in citizens:
-            curs.execute("""INSERT INTO citizen 
-                               (import_id, citizen_id, town, street, building,
-                               appartement, name, birth_date, gender, relatives)
-                               VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);""",
-                         [import_id, c["citizen_id"], c["town"], c["street"], c["building"], c["appartement"],
-                          c["name"], c["birth_date"], c["gender"], c["relatives"]])
+            try:
+                curs.execute("""INSERT INTO citizen 
+                                   (import_id, citizen_id, town, street, building,
+                                   appartement, name, birth_date, gender, relatives)
+                                   VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);""",
+                             [import_id, c["citizen_id"], c["town"], c["street"], c["building"], c["appartement"],
+                              c["name"], c["birth_date"], c["gender"], c["relatives"]])
+            except psycopg2.OperationalError as e:
+                print("this is errror")
 
 
 sample_citizens = [
