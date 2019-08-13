@@ -1,8 +1,9 @@
+import collections
 import random
 
 from flask import Flask, jsonify, request
 
-from db import insert_citizens, select_citizens_by_import_id
+from db import insert_citizens, select_citizens_by_import_id, select_presents_amount_by_month
 
 app = Flask(__name__)
 
@@ -23,9 +24,29 @@ def import_citizens():
 
 @app.route('/imports/<int:import_id>/citizens', methods=['GET'])
 def get_citizens(import_id):
-    citizens = select_citizens_by_import_id(str(import_id))
+    citizens = select_citizens_by_import_id(import_id)
 
     res = {'data': citizens}
+
+    return jsonify(res), 200
+
+
+@app.route('/imports/<int:import_id>/citizens/birthdays', methods=['GET'])
+def get_citizens_birthdays(import_id):
+    presents_amount_by_month = select_presents_amount_by_month(import_id)
+
+    months = collections.defaultdict(list)
+    for row in presents_amount_by_month:
+        months[row["mon"]].append({
+            "citizen_id": row["citizen_id"],
+            "name": row["name"],
+            "presents": row["presents"]
+        })
+    year_resume = {}
+    for i in range(1, 13):
+        year_resume[i] = months[i]
+
+    res = {'data': year_resume}
 
     return jsonify(res), 200
 

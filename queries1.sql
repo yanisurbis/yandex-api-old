@@ -29,7 +29,7 @@ FROM citizen;
 
 SELECT *
 FROM citizen
-WHERE import_id = 1;
+WHERE import_id = 2141927963;
 
 SELECT *
 FROM relation;
@@ -55,3 +55,17 @@ INSERT INTO citizen (import_id, citizen_id, town, street, building, appartement,
                      relatives)
 VALUES (1, 2, 'Moscow', 'Lev Tolstoy', '16', 7, 'Yanis Urbis', '1994-08-26',
         'male', ARRAY [3, 4]);
+
+WITH imported_citizens AS (
+    SELECT *
+    FROM citizen
+    WHERE import_id = 1473046223
+)
+
+SELECT EXTRACT(MON FROM c.birth_date) as mon, imported_citizens.name, COUNT(c.name)
+FROM imported_citizens
+         INNER JOIN relation r on imported_citizens.citizen_id = r.citizen1_id AND
+                                  imported_citizens.import_id = r.citizen_import_id
+         INNER JOIN imported_citizens c on c.citizen_id = r.citizen2_id
+GROUP BY mon, imported_citizens.name
+ORDER BY mon;

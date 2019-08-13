@@ -6,19 +6,51 @@
       "building": "16",
       "citizen_id": 1,
       "gender": "male",
-      "name": "John Snow",
-      "relatives": [],
+      "name": "Yanis",
+      "relatives": [
+        2,
+        3,
+        4
+      ],
       "street": "Lev Tolstoy",
       "town": "Moscow"
     },
     {
       "appartement": 7,
-      "birth_date": "Fri, 26 Aug 1994 00:00:00 GMT",
+      "birth_date": "Fri, 04 May 1996 00:00:00 GMT",
       "building": "16",
       "citizen_id": 2,
       "gender": "male",
+      "name": "Ksusha",
+      "relatives": [
+        1
+      ],
+      "street": "Lev Tolstoy",
+      "town": "Moscow"
+    },
+    {
+      "appartement": 7,
+      "birth_date": "Fri, 23 Apr 1967 00:00:00 GMT",
+      "building": "16",
+      "citizen_id": 3,
+      "gender": "male",
+      "name": "Sveta",
+      "relatives": [
+        1
+      ],
+      "street": "Lev Tolstoy",
+      "town": "Moscow"
+    },
+    {
+      "appartement": 7,
+      "birth_date": "Fri, 18 Apr 1972 00:00:00 GMT",
+      "building": "16",
+      "citizen_id": 4,
+      "gender": "male",
       "name": "Stouner",
-      "relatives": [],
+      "relatives": [
+        1
+      ],
       "street": "Lev Tolstoy",
       "town": "Moscow"
     }
