@@ -59,4 +59,4 @@ sample_citizens = [
 ]
 
 # insert_citizens(123, sample_citizens)
-select_citizens_by_import_id(123)
+# select_citizens_by_import_id(123)

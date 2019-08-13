@@ -10,7 +10,7 @@ app = Flask(__name__)
 @app.route('/imports', methods=['POST'])
 def import_citizens():
     citizens = request.get_json()['citizens']
-    import_id = uuid.uuid4().int % 999999999
+    import_id = str(uuid.uuid1())
     insert_citizens(import_id, citizens)
 
     res = {'data': {
@@ -20,7 +20,7 @@ def import_citizens():
     return jsonify(res), 201
 
 
-@app.route('/imports/<string:import_id>/citizens', methods=['GET'])
+@app.route('/imports/<uuid:import_id>/citizens', methods=['GET'])
 def get_citizens(import_id):
     citizens = select_citizens_by_import_id(import_id)
 
