@@ -1,0 +1,16 @@
+{
+  "data": {
+    "appartement": 7,
+    "birth_date": "Fri, 26 Aug 1994 00:00:00 GMT",
+    "building": "16",
+    "citizen_id": 1,
+    "gender": "male",
+    "name": "Yanis",
+    "relatives": [
+      2,
+      5
+    ],
+    "street": "Lev Tolstoy",
+    "town": "Moscow"
+  }
+}

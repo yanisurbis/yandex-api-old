@@ -53,6 +53,17 @@
       ],
       "street": "Lev Tolstoy",
       "town": "Moscow"
+    },
+    {
+      "appartement": 7,
+      "birth_date": "Fri, 18 Apr 1972 00:00:00 GMT",
+      "building": "16",
+      "citizen_id": 5,
+      "gender": "male",
+      "name": "HAHAHAHAAH",
+      "relatives": [],
+      "street": "HAHAHAHAHA",
+      "town": "Moscow"
     }
   ]
 }

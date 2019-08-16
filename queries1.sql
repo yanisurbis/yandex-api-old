@@ -28,11 +28,24 @@ SELECT *
 FROM citizen;
 
 SELECT *
+FROM relation;
+
+SELECT *
 FROM citizen
 WHERE import_id = 2141927963;
 
 SELECT *
+FROM citizen
+WHERE import_id = 1473046223
+  and citizen_id = 3;
+
+DELETE
+FROM citizen;
+
+DELETE
 FROM relation;
+
+
 
 SELECT citizen_id, town
 FROM citizen

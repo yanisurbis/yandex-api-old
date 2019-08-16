@@ -3,10 +3,14 @@ import random
 
 from flask import Flask, jsonify, request
 
-from db import insert_citizens, select_citizens_by_import_id, select_presents_amount_by_month
+from db import insert_citizens, select_citizens_by_import_id, select_presents_amount_by_month, select_citizen, \
+    update_citizen, delete_relation, insert_relation
+from utils import diff
 
 app = Flask(__name__)
 
+
+# TODO: check if relatives exists
 
 @app.route('/imports', methods=['POST'])
 def import_citizens():
@@ -20,6 +24,53 @@ def import_citizens():
     }}
 
     return jsonify(res), 201
+
+
+@app.route('/imports/<int:import_id>/citizens/<int:citizen_id>', methods=['PATCH'])
+def patch_citizen(import_id, citizen_id):
+    citizen_patch = request.get_json()['data']
+    citizen = select_citizen(import_id, citizen_id)
+    citizen_copy = citizen.copy()
+
+    # update citizen
+    for key in citizen.keys():
+        if citizen_patch[key]:
+            citizen[key] = citizen_patch[key]
+
+    update_citizen(import_id, citizen)
+
+    print(citizen['relatives'])
+    print(citizen_patch['relatives'])
+
+    if citizen_patch['relatives']:
+        print("HERE")
+        past_relatives_ids = diff(citizen_copy['relatives'], citizen_patch['relatives'])
+        future_relatives_ids = diff(citizen_patch['relatives'], citizen_copy['relatives'])
+        print(past_relatives_ids)
+        print(future_relatives_ids)
+        # update past relatives
+        for relative_id in past_relatives_ids:
+            relative = select_citizen(import_id, relative_id)
+            relative["relatives"].remove(citizen_id)
+            update_citizen(import_id, relative)
+
+        # update future relatives
+        for relative_id in future_relatives_ids:
+            relative = select_citizen(import_id, relative_id)
+            relative["relatives"].append(citizen_id)
+            update_citizen(import_id, relative)
+
+        for relative_id in past_relatives_ids:
+            delete_relation(import_id, relative_id, citizen_id)
+            delete_relation(import_id, citizen_id, relative_id)
+
+        for relative_id in future_relatives_ids:
+            insert_relation(import_id, relative_id, citizen_id)
+            insert_relation(import_id, citizen_id, relative_id)
+
+    res = {'data': citizen}
+
+    return jsonify(res), 200
 
 
 @app.route('/imports/<int:import_id>/citizens', methods=['GET'])
