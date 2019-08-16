@@ -115,6 +115,25 @@ def select_presents_amount_by_month(import_id):
             return curs.fetchall()
 
 
+def select_stats_by_town(import_id):
+    with psycopg2.connect(DSL) as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as curs:
+            curs.execute(
+                """SELECT DISTINCT town,
+                                    PERCENTILE_CONT(0.5) WITHIN
+                                        GROUP (ORDER BY EXTRACT(YEAR FROM AGE(birth_date)) asc)   as p50,
+                                    PERCENTILE_CONT(0.75) WITHIN
+                                        GROUP ( ORDER BY EXTRACT(YEAR FROM AGE(birth_date)) asc ) as p75,
+                                    PERCENTILE_CONT(0.99) WITHIN
+                                        GROUP ( ORDER BY EXTRACT(YEAR FROM AGE(birth_date)) asc ) as p99
+                    FROM citizen
+                    WHERE import_id = (%s)
+                    GROUP BY town""",
+                [import_id])
+
+            return curs.fetchall()
+
+
 sample_citizens = [
     {
         "appartement": 7,
@@ -165,3 +184,4 @@ sample_citizens = [
 #     "street": "Lev Tolstoy",
 #     "town": "Moscow"
 # })
+# print(select_stats_by_town(697620342))

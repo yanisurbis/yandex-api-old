@@ -4,13 +4,11 @@ import random
 from flask import Flask, jsonify, request
 
 from db import insert_citizens, select_citizens_by_import_id, select_presents_amount_by_month, select_citizen, \
-    update_citizen, delete_relation, insert_relation
+    update_citizen, delete_relation, insert_relation, select_stats_by_town
 from utils import diff
 
 app = Flask(__name__)
 
-
-# TODO: check if relatives exists
 
 @app.route('/imports', methods=['POST'])
 def import_citizens():
@@ -26,6 +24,8 @@ def import_citizens():
     return jsonify(res), 201
 
 
+# TODO: check if relatives exists
+
 @app.route('/imports/<int:import_id>/citizens/<int:citizen_id>', methods=['PATCH'])
 def patch_citizen(import_id, citizen_id):
     citizen_patch = request.get_json()['data']
@@ -39,15 +39,9 @@ def patch_citizen(import_id, citizen_id):
 
     update_citizen(import_id, citizen)
 
-    print(citizen['relatives'])
-    print(citizen_patch['relatives'])
-
     if citizen_patch['relatives']:
-        print("HERE")
         past_relatives_ids = diff(citizen_copy['relatives'], citizen_patch['relatives'])
         future_relatives_ids = diff(citizen_patch['relatives'], citizen_copy['relatives'])
-        print(past_relatives_ids)
-        print(future_relatives_ids)
         # update past relatives
         for relative_id in past_relatives_ids:
             relative = select_citizen(import_id, relative_id)
@@ -102,16 +96,12 @@ def get_citizens_birthdays(import_id):
     return jsonify(res), 200
 
 
-# # TODO: should UUID:import_id?
-# @app.route('/imports/<string:import_id>/citizens/<string:citizen_id>', methods=['PATCH'])
-# def update_citizen(import_id, citizen_id):
-#     partial_citizen = request.get_json()
-#
-#     citizen = db.update_citizen(import_id, citizen_id, partial_citizen)
-#
-#     res = {'data': citizen}
-#
-#     return jsonify(res), 200
+@app.route('/imports/<int:import_id>/towns/stat/percentile/age', methods=['GET'])
+def get_towns_stats(import_id):
+    stat_rows = select_stats_by_town(import_id)
+
+    res = {'data': stat_rows}
+    return jsonify(res), 200
 
 
 if __name__ == '__main__':
