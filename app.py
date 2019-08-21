@@ -10,6 +10,8 @@ from utils import diff
 app = Flask(__name__)
 
 
+# TODO: try validation with https://pypi.org/project/flask-expects-json/
+
 @app.route('/imports', methods=['POST'])
 def import_citizens():
     citizens = request.get_json()['citizens']
